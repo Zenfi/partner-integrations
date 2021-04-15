@@ -1,0 +1,27 @@
+<script>
+  window.zenfi = zenfiController();
+  window.zenfi.fillData();
+  window.zenfi.fillLabels();
+
+  const data = window.zenfi.loadData();
+  if (data.total_savings > 0) {
+    $('#generic-title-container').hide();
+    $('#savings-title-container').show();
+  } else {
+    $('#generic-title-container').show();
+    $('#savings-title-container').hide();
+  }
+
+  handleFormSubmit('#personal-info-form', async (data) => {
+    const approval = window.zenfi.getCreditApproval(data);
+    data.credit_status = approval.status;
+    data.credit_rejection_reason = approval.reason;
+    await window.zenfi.sendData(data);
+
+    if (approval.status === 'SUCCEEDED') {
+      window.location.href = '/yave/success';
+    } else {
+      window.location.href = '/yave/reject';
+    }
+  });
+</script>
