@@ -13,6 +13,13 @@ function formatPercentage(num, decimals = 0) {
   return `${formatNumber(num, decimals)}%`
 }
 
+function b64DecodeUnicode(str) {
+  // https://stackoverflow.com/questions/30106476/using-javascripts-atob-to-decode-base64-doesnt-properly-decode-utf-8-strings
+  return decodeURIComponent(atob(str).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+}
+
 function zenfiController() {
   const webhook = 'https://hooks.zapier.com/hooks/catch/6693237/ov3n98i/';
   const simulatorUrl = 'https://api.yave.mx/simulador/api/v2/simulations/';
@@ -105,7 +112,7 @@ function zenfiController() {
     const urlData = new URLSearchParams(location.search).get(urlParamName);
     if (!urlData) return null;
     try {
-      const parsed = JSON.parse(atob(urlData));
+      const parsed = JSON.parse(b64DecodeUnicode(urlData));
       parsed.phone_form = parsed.phone // Copy phone
       mergeInCookie(parsed);
       return parsed;
