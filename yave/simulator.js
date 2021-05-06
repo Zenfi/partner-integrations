@@ -42,12 +42,20 @@ function zenfiController() {
       inputSelector: '#interest-input',
     },
     {
+      dataKey: 'credit_opening_year',
+      inputSelector: '#year-input',
+    },
+    {
       dataKey: 'credit_remaining_years',
       inputSelector: '#remaining-years-input',
     },
     {
       dataKey: 'monthly_payment',
       inputSelector: '#monthly-payment-input',
+    },
+    {
+      dataKey: 'zipcode',
+      inputSelector: '#zipcode-input',
     },
     // 2nd form
     {
