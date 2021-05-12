@@ -173,12 +173,12 @@ function zenfiController() {
   };
 
   const getRejectionReason = (data) => {
-    if (String(data.employment_status) !== '1') return 'EMPLOYMENT_STATUS';
-
     if (parseInt(data.monthly_income) < minIncome) return 'LOW_INCOME';
 
-    const leverage = parseInt(data.credit_balance) / parseInt(data.total_value);
-    if (leverage > 0.85) return 'HIGH_LEVERAGE';
+    // Skipping EMPLOYMENT_STATUS and HIGH_LEVERAGE validations while Yave team tests response.
+    // if (String(data.employment_status) !== '1') return 'EMPLOYMENT_STATUS';
+    // const leverage = parseInt(data.credit_balance) / parseInt(data.total_value);
+    // if (leverage > 0.85) return 'HIGH_LEVERAGE';
 
     return null;
   };
