@@ -207,7 +207,7 @@ function zenfiController() {
     const simulationInput = {
       product_name: 'FIXED_PAYMENT',
       term: yaveTerms,
-      rate: data.interest_rate,
+      rate: newInterestRate,
       property_value: data.total_value,
       loan_requested: data.credit_balance,
       get_table: false
@@ -222,8 +222,6 @@ function zenfiController() {
       },
     });
     const payload = await response.json();
-    console.log('INPUT', simulationInput);
-    console.log('OUTPUT', payload);
     const payment = payload.payment;
     const totalYavePayment = 12 * yaveTerms * payment;
     const totalCurrentPayment = 12 * termYears * currentPayment;
