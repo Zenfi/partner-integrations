@@ -203,15 +203,17 @@ function zenfiController() {
     const newInterestRate = defaultYaveInterest;
     const termYears = parseInt(data.credit_remaining_years);
     const currentPayment = parseInt(data.monthly_payment);
+    const yaveTerms = Math.min(20, termYears);
+    const simulationInput = {
+      product_name: 'FIXED_PAYMENT',
+      term: yaveTerms,
+      rate: data.interest_rate,
+      property_value: data.total_value,
+      loan_requested: data.credit_balance,
+      get_table: false
+    };
     const response = await fetch(simulatorUrl, {
-      body: JSON.stringify({
-        product_name: 'FIXED_PAYMENT',
-        term: termYears,
-        rate: data.interest_rate,
-        property_value: data.total_value,
-        loan_requested: data.credit_balance,
-        get_table: false
-      }),
+      body: JSON.stringify(simulationInput),
       method: 'post',
       headers: {
         'Accept': 'application/json',
@@ -220,9 +222,13 @@ function zenfiController() {
       },
     });
     const payload = await response.json();
+    console.log('INPUT', simulationInput);
+    console.log('OUTPUT', payload);
     const payment = payload.payment;
-    const monthlySavings = currentPayment - payment;
-    const totalSavings = 12 * termYears * monthlySavings;
+    const totalYavePayment = 12 * yaveTerms * payment;
+    const totalCurrentPayment = 12 * termYears * currentPayment;
+    const totalSavings = totalCurrentPayment - totalYavePayment;
+    const monthlySavings = totalSavings / (12 * yaveTerms);
     mergeInCookie({
       yave_monthly_payment: payment,
       yave_interest_rate: newInterestRate,
