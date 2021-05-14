@@ -12,4 +12,4 @@ jobs:
     - name: curl
       uses: wei/curl@v1
       with:
-        args: https://purge.jsdelivr.net/gh/zenfi/partner-integrations@latest/yave/simulator.js
+        args: https://purge.jsdelivr.net/gh/zenfi/partner-integrations/yave/simulator.js
