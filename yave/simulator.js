@@ -226,7 +226,7 @@ function zenfiController() {
     const totalYavePayment = 12 * yaveTerms * payment;
     const totalCurrentPayment = 12 * termYears * currentPayment;
     const totalSavings = totalCurrentPayment - totalYavePayment;
-    const monthlySavings = totalSavings / (12 * yaveTerms);
+    const monthlySavings = totalSavings / (12 * termYears);
     mergeInCookie({
       yave_monthly_payment: payment,
       yave_interest_rate: newInterestRate,
