@@ -1,0 +1,20 @@
+<script>
+  const buttonId = 'schedule-call-btn';
+  const callLinks = [
+    'https://calendly.com/yave-daniel/platiquemos-de-tu-mejora-de-hipoteca',
+    'https://calendly.com/tulio-yave/platiquemos-de-tu-mejora-de-hipoteca'
+  ];
+
+  (function bindButton() {
+    const button = document.getElementById(buttonId);
+    button.addEventListener("click", event => {
+      event.preventDefault();
+      window.location.href = pickRandom(callLinks);
+    });
+  })();
+
+  function pickRandom(items) {
+    const index = Math.floor(Math.random() * items.length);
+    return items[index];
+  }
+</script>

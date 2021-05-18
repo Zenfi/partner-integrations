@@ -20,6 +20,47 @@ function b64DecodeUnicode(str) {
   }).join(''));
 }
 
+function getSimpleSavingsPercentage(remainingYears, interest) {
+  const clampInt = (min, max, value) => Math.max(min, Math.min(max, parseInt(value)));
+  const savings = [
+    // Remaining years: 20, 19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5
+    [0.0, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00, 0.00], // 8.50%
+    [3.81, 3.56, 3.31, 3.06, 2.81, 2.57, 2.32, 2.08, 1.84, 1.61, 1.39, 1.17, 0.97, 0.77, 0.59, 0.43], // 8.75%
+    [7.66, 7.16, 6.66, 6.16, 5.66, 5.16, 4.67, 4.19, 3.71, 3.25, 2.80, 2.36, 1.95, 1.56, 1.20, 0.87], // 9.00%
+    [11.53, 10.78, 10.03, 9.28, 8.53, 7.79, 7.05, 6.32, 5.61, 4.91, 4.23, 3.57, 2.94, 2.36, 1.81, 1.32], // 9.25%
+    [15.43, 14.43, 13.43, 12.43, 11.43, 10.44, 9.45, 8.48, 7.52, 6.59, 5.67, 4.80, 3.96, 3.17, 2.44, 1.77], // 9.50%
+    [19.37, 18.12, 16.86, 15.61, 14.36, 13.12, 11.88, 10.66, 9.46, 8.29, 7.14, 6.04, 4.99, 3.99, 3.07, 2.24], // 9.75%
+    [23.33, 21.83, 20.32, 18.82, 17.32, 15.82, 14.34, 12.87, 11.43, 10.01, 8.63, 7.30, 6.03, 4.83, 3.72, 2.71], // 10.00%
+    [27.32, 25.56, 23.81, 22.05, 20.30, 18.55, 16.82, 15.10, 13.41, 11.76, 10.14, 8.58, 7.09, 5.69, 4.38, 3.19], // 10.25%
+    [31.33, 29.33, 27.32, 25.31, 23.31, 21.31, 19.32, 17.36, 15.42, 13.52, 11.67, 9.88, 8.17, 6.55, 5.05, 3.68], // 10.50%
+    [35.38, 33.12, 30.86, 28.60, 26.34, 24.09, 21.85, 19.64, 17.45, 15.31, 13.22, 11.20, 9.26, 7.43, 5.73, 4.18], // 10.75%
+    [39.45, 36.94, 34.43, 31.92, 29.40, 26.90, 24.41, 21.94, 19.51, 17.12, 14.79, 12.53, 10.37, 8.32, 6.42, 4.69], // 11.00%
+    [43.54, 40.79, 38.03, 35.26, 32.49, 29.73, 26.99, 24.27, 21.58, 18.94, 16.37, 13.88, 11.49, 9.23, 7.12, 5.20], // 11.25%
+    [47.67, 44.66, 41.64, 38.62, 35.60, 32.59, 29.59, 26.61, 23.68, 20.79, 17.98, 15.25, 12.63, 10.15, 7.83, 5.72], // 11.50%
+    [51.81, 48.56, 45.29, 42.01, 38.74, 35.47, 32.21, 28.99, 25.80, 22.66, 19.60, 16.63, 13.78, 11.08, 8.55, 6.26], // 11.75%
+    [55.98, 52.48, 48.96, 45.43, 41.90, 38.37, 34.86, 31.38, 27.93, 24.55, 21.24, 18.03, 14.94, 12.02, 9.29, 6.80], // 12.00%
+    [60.18, 56.42, 52.65, 48.86, 45.08, 41.30, 37.53, 33.79, 30.09, 26.46, 22.90, 19.44, 16.13, 12.97, 10.03, 7.34], // 12.25%
+    [64.40, 60.39, 56.36, 52.32, 48.28, 44.24, 40.22, 36.23, 32.27, 28.38, 24.57, 20.88, 17.32, 13.94, 10.78, 7.90], // 12.50%
+    [68.64, 64.38, 60.10, 55.81, 51.51, 47.21, 42.93, 38.68, 34.47, 30.33, 26.27, 22.32, 18.53, 14.92, 11.55, 8.46], // 12.75%
+    [72.90, 68.39, 63.86, 59.31, 54.76, 50.21, 45.67, 41.16, 36.69, 32.29, 27.98, 23.79, 19.75, 15.91, 12.32, 9.03], // 13.00%
+    [77.19, 72.42, 67.64, 62.84, 58.03, 53.22, 48.42, 43.65, 38.93, 34.27, 29.71, 25.27, 20.99, 16.92, 13.10, 9.61], // 13.25%
+    [81.49, 76.48, 71.44, 66.39, 61.32, 56.25, 51.20, 46.17, 41.18, 36.27, 31.45, 26.76, 22.24, 17.93, 13.90, 10.20], // 13.50%
+    [85.82, 80.56, 75.27, 69.95, 64.63, 59.30, 53.99, 48.70, 43.46, 38.29, 33.21, 28.27, 23.50, 18.96, 14.70, 10.79], // 13.75%
+    [90.17, 84.65, 79.11, 73.54, 67.96, 62.38, 56.80, 51.25, 45.75, 40.32, 34.99, 29.79, 24.78, 20.00, 15.52, 11.40], // 14.00%
+    [94.53, 88.77, 82.97, 77.15, 71.31, 65.47, 59.63, 53.82, 48.06, 42.37, 36.78, 31.33, 26.07, 21.05, 16.34, 12.01], // 14.25%
+    [98.92, 92.91, 86.85, 80.78, 74.68, 68.58, 62.48, 56.41, 50.39, 44.44, 38.59, 32.89, 27.38, 22.11, 17.17, 12.63], // 14.50%
+    [103.33, 97.06, 90.76, 84.42, 78.07, 71.71, 65.35, 59.02, 52.73, 46.52, 40.41, 34.45, 28.69, 23.19, 18.01, 13.25], // 14.75%
+  ];
+  const indexPerInterestRate = clampInt(0, 25, interest * 4 - 34);
+  const indexPerRemainingYears = clampInt(0, 15, 20 - remainingYears);
+  return savings[indexPerInterestRate][indexPerRemainingYears];
+}
+
+function getSimpleSavings({ creditBalance, remainingYears, interestRate }) {
+  const savingsPercentage = getSimpleSavingsPercentage(remainingYears, interestRate);
+  return creditBalance * savingsPercentage / 100.0;
+}
+
 function zenfiController() {
   const webhook = 'https://hooks.zapier.com/hooks/catch/6693237/ov3n98i/';
   const simulatorUrl = 'https://api.yave.mx/simulador/api/v2/simulations/';
@@ -199,17 +240,13 @@ function zenfiController() {
     },
   });
 
-  const simulateCredit = async (data) => {
-    const newInterestRate = defaultYaveInterest;
-    const termYears = parseInt(data.credit_remaining_years);
-    const currentPayment = parseInt(data.monthly_payment);
-    const yaveTerms = Math.min(20, termYears);
+  const getSimulatedSavings = async ({ yaveTerms, newInterestRate, totalCurrentPayment, propertyValue, creditBalance }) => {
     const simulationInput = {
       product_name: 'FIXED_PAYMENT',
       term: yaveTerms,
       rate: newInterestRate,
-      property_value: data.total_value,
-      loan_requested: data.credit_balance,
+      property_value: propertyValue,
+      loan_requested: creditBalance,
       get_table: false
     };
     const response = await fetch(simulatorUrl, {
@@ -222,10 +259,35 @@ function zenfiController() {
       },
     });
     const payload = await response.json();
-    const payment = payload.payment;
-    const totalYavePayment = 12 * yaveTerms * payment;
+    const monthlyPayment = payload.payment;
+    const totalPayment = 12 * yaveTerms * monthlyPayment;
+    return totalPayment - totalCurrentPayment;
+  };
+
+  const simulateCredit = async (data) => {
+    const newInterestRate = defaultYaveInterest;
+    const currentInterestRate = parseFloat(data.interest_rate);
+    const termYears = parseInt(data.credit_remaining_years);
+    const yaveTerms = Math.min(20, termYears);
+    const currentPayment = parseInt(data.monthly_payment);
     const totalCurrentPayment = 12 * termYears * currentPayment;
-    const totalSavings = totalCurrentPayment - totalYavePayment;
+    const simulatedSavings = await getSimulatedSavings({
+      yaveTerms,
+      newInterestRate,
+      totalCurrentPayment,
+      propertyValue: data.total_value,
+      creditBalance: data.credit_balance,
+    });
+    const simpleSavings = getSimpleSavings({
+      creditBalance,
+      interestRate: currentInterestRate,
+      remainingYears: yaveTerms,
+    });
+    console.log({
+      simulatedSavings,
+      simpleSavings
+    });
+    const totalSavings = Math.max(simulatedSavings, simpleSavings);
     const monthlySavings = totalSavings / (12 * termYears);
     mergeInCookie({
       yave_monthly_payment: payment,

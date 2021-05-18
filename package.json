@@ -1,0 +1,18 @@
+{
+  "name": "partner-integrations",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "git@github.com:zenfi/partner-integrations.git",
+  "author": "Manuel de la Torre <manuelmhtr@gmail.com>",
+  "license": "MIT",
+  "private": true,
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/?(*.)+(spec|test).[jt]s?(x)"
+    ]
+  },
+  "devDependencies": {
+    "jest": "^26.6.3"
+  }
+}
