@@ -283,10 +283,6 @@ function zenfiController() {
       interestRate: currentInterestRate,
       remainingYears: yaveTerms,
     });
-    console.log({
-      simulatedSavings,
-      simpleSavings
-    });
     const totalSavings = Math.max(simulatedSavings, simpleSavings);
     const monthlySavings = totalSavings / (12 * termYears);
     const yaveMonthlyPayment = currentPayment - monthlySavings;
