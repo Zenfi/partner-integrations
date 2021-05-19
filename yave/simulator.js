@@ -279,7 +279,7 @@ function zenfiController() {
       creditBalance: data.credit_balance,
     });
     const simpleSavings = getSimpleSavings({
-      creditBalance,
+      creditBalance: data.credit_balance,
       interestRate: currentInterestRate,
       remainingYears: yaveTerms,
     });
