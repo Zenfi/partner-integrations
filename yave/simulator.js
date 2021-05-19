@@ -261,7 +261,7 @@ function zenfiController() {
     const payload = await response.json();
     const monthlyPayment = payload.payment;
     const totalPayment = 12 * yaveTerms * monthlyPayment;
-    return totalPayment - totalCurrentPayment;
+    return totalCurrentPayment - totalPayment;
   };
 
   const simulateCredit = async (data) => {
@@ -289,8 +289,9 @@ function zenfiController() {
     });
     const totalSavings = Math.max(simulatedSavings, simpleSavings);
     const monthlySavings = totalSavings / (12 * termYears);
+    const yaveMonthlyPayment = currentPayment - monthlySavings;
     mergeInCookie({
-      yave_monthly_payment: payment,
+      yave_monthly_payment: yaveMonthlyPayment,
       yave_interest_rate: newInterestRate,
       monthly_savings: monthlySavings,
       total_savings: totalSavings,
