@@ -1,20 +1,51 @@
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@rc/dist/js.cookie.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/zenfi/partner-integrations@main/yave/simulator.js"></script>
+<script type="text/javascript" src="https://assets.calendly.com/assets/external/widget.js"></script>
 <script>
-  const buttonId = 'schedule-call-btn';
+  window.zenfi = zenfiController();
+
+  const eventsWebhook = 'https://hooks.zapier.com/hooks/catch/6693237/bovn032/';
   const callLinks = [
     'https://calendly.com/yave-daniel/platiquemos-de-tu-mejora-de-hipoteca',
     'https://calendly.com/tulio-yave/platiquemos-de-tu-mejora-de-hipoteca'
   ];
 
-  (function bindButton() {
-    const button = document.getElementById(buttonId);
-    button.addEventListener("click", event => {
-      event.preventDefault();
-      window.location.href = pickRandom(callLinks);
+  (function initCalendly() {
+    const data = zenfi.loadData();
+    const fullName = buildFullName([
+      data.names,
+      data.last_name1,
+      data.last_name2
+    ]);
+
+    Calendly.initInlineWidget({
+      url: pickRandom(callLinks),
+      parentElement: document.getElementById('calendly-widget'),
+      prefill: {
+        name: fullName,
+        email: data.email
+      }
     });
   })();
+
+  function buildFullName(components) {
+    return components
+      .filter(c => !!c)
+      .join(' ');
+  }
 
   function pickRandom(items) {
     const index = Math.floor(Math.random() * items.length);
     return items[index];
   }
+
+  function isBookingEvent(e) {
+    return (e.data || {}).event === 'calendly.event_scheduled';
+  };
+
+  window.addEventListener('message', function(e) {
+    if (!isBookingEvent(e)) return;
+    const data = zenfi.loadData();
+    zenfi.sendData(data, eventsWebhook);
+  });
 </script>

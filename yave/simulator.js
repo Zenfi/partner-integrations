@@ -62,7 +62,7 @@ function getSimpleSavings({ creditBalance, remainingYears, interestRate }) {
 }
 
 function zenfiController() {
-  const webhook = 'https://hooks.zapier.com/hooks/catch/6693237/ov3n98i/';
+  const leadsWebhook = 'https://hooks.zapier.com/hooks/catch/6693237/ov3n98i/';
   const simulatorUrl = 'https://api.yave.mx/simulador/api/v2/simulations/';
   const cookieName = 'zfdata';
   const urlParamName = 'zfdata';
@@ -230,7 +230,7 @@ function zenfiController() {
     return { status, reason };
   };
 
-  const sendData = (data) => fetch(webhook, {
+  const sendData = (data, webhook) => fetch(webhook || leadsWebhook, {
     body: JSON.stringify(data),
     method: 'post',
     mode: 'no-cors',
