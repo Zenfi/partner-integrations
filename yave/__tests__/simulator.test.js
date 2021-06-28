@@ -24,6 +24,28 @@ describe('.getSimpleSavingsPercentage', () => {
   });
 });
 
+describe('.calculateRemainingPayments', () => {
+  it('calculates the approximate amount of payments to end the credit', () => {
+    const data = {
+      amount: 220000,
+      monthlyPayment: 11000,
+      interestRate: 10,
+    };
+    const result = calculateRemainingPayments(data);
+    expect(result).toBe(22);
+  });
+
+  it('returns a maximum when the credit seems impossible to pay', () => {
+    const data = {
+      amount: 220000,
+      monthlyPayment: 1,
+      interestRate: 100,
+    };
+    const result = calculateRemainingPayments(data);
+    expect(result).toBe(360);
+  });
+});
+
 describe('.getSimpleSavings', () => {
   it('returns the simple savings calculation', () => {
     const result = getSimpleSavings({

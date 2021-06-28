@@ -61,6 +61,18 @@ function getSimpleSavings({ creditBalance, remainingYears, interestRate }) {
   return creditBalance * savingsPercentage / 100.0;
 }
 
+function calculateRemainingPayments({ amount, monthlyPayment, interestRate, count = 0 }) {
+  if (count >= 360 || amount <= 0) return count;
+  const interest = amount * (interestRate / (12 * 100));
+  const capital = monthlyPayment - interest;
+  return calculateRemainingPayments({
+    monthlyPayment,
+    interestRate,
+    amount: amount - capital,
+    count: count + 1,
+  });
+};
+
 function zenfiController() {
   const leadsWebhook = 'https://hooks.zapier.com/hooks/catch/6693237/ov3n98i/';
   const simulatorUrl = 'https://api.yave.mx/simulador/api/v2/simulations/';
@@ -267,10 +279,17 @@ function zenfiController() {
   const simulateCredit = async (data) => {
     const newInterestRate = defaultYaveInterest;
     const currentInterestRate = parseFloat(data.interest_rate);
-    const termYears = parseInt(data.credit_remaining_years);
-    const yaveTerms = Math.min(20, termYears);
+    const creditBalance = parseFloat(data.credit_balance);
     const currentPayment = parseInt(data.monthly_payment);
-    const totalCurrentPayment = 12 * termYears * currentPayment;
+    const inputTerms = parseInt(data.credit_remaining_years);
+    const calculatedTerms = calculateRemainingPayments({
+      amount: creditBalance,
+      monthlyPayment: currentPayment,
+      interestRate: currentInterestRate,
+    });
+    const currentTerms = Math.min(inputTerms, calculatedTerms);
+    const yaveTerms = Math.min(20, currentTerms);
+    const totalCurrentPayment = 12 * currentTerms * currentPayment;
     const simulatedSavings = await getSimulatedSavings({
       yaveTerms,
       newInterestRate,
@@ -284,7 +303,7 @@ function zenfiController() {
       remainingYears: yaveTerms,
     });
     const totalSavings = Math.max(simulatedSavings, simpleSavings);
-    const monthlySavings = totalSavings / (12 * termYears);
+    const monthlySavings = totalSavings / (12 * currentTerms);
     const yaveMonthlyPayment = currentPayment - monthlySavings;
     mergeInCookie({
       yave_monthly_payment: yaveMonthlyPayment,
