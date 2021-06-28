@@ -282,11 +282,11 @@ function zenfiController() {
     const creditBalance = parseFloat(data.credit_balance);
     const currentPayment = parseInt(data.monthly_payment);
     const inputTerms = parseInt(data.credit_remaining_years);
-    const calculatedTerms = calculateRemainingPayments({
+    const calculatedTerms = Math.ceil(calculateRemainingPayments({
       amount: creditBalance,
       monthlyPayment: currentPayment,
       interestRate: currentInterestRate,
-    });
+    }) / 12);
     const currentTerms = Math.min(inputTerms, calculatedTerms);
     const yaveTerms = Math.min(20, currentTerms);
     const totalCurrentPayment = 12 * currentTerms * currentPayment;
