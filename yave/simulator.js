@@ -73,6 +73,37 @@ function calculateRemainingPayments({ amount, monthlyPayment, interestRate, coun
   });
 };
 
+function buildYaveLink(data) {
+  const get = (key) => (data || {})[key] || null;
+  const yaveData = {
+    balance_payable: get('credit_balance'),
+    current_payment: get('monthly_payment'),
+    credit_start_month: get('credit_opening_month'),
+    credit_start_year: get('credit_opening_year'),
+    original_term: get('credit_term_years'),
+    payment_type: null,
+    years_employed: null,
+    months_employed: null,
+    has_coapplicant: null,
+    property_value: get('total_value'),
+    last_name: get('last_name1'),
+    second_last_name: get('last_name2'),
+    street: get('street'),
+    city: null,
+    names: get('names'),
+    ext_num: get('ext_number'),
+    int_num: get('int_number'),
+    address_neighborhood: null,
+    rfc: get('rfc'),
+    income_type: get('employment_status') ? parseInt(get('employment_status')) : null,
+    cp: get('postal_code'),
+    email: get('email'),
+    state: get('state_id'),
+    salary: get('monthly_income'),
+  };
+  return `https://yave.mx/zenfi?p=${btoa(JSON.stringify(yaveData))}`;
+}
+
 function zenfiController() {
   const leadsWebhook = 'https://hooks.zapier.com/hooks/catch/6693237/ov3n98i/';
   const simulatorUrl = 'https://api.yave.mx/simulador/api/v2/simulations/';
@@ -107,7 +138,7 @@ function zenfiController() {
       inputSelector: '#monthly-payment-input',
     },
     {
-      dataKey: 'zipcode',
+      dataKey: 'postal_code',
       inputSelector: '#zipcode-input',
     },
     // 2nd form
