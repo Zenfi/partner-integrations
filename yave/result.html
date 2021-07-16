@@ -4,4 +4,17 @@
 <script>
   window.zenfi = zenfiController();
   window.zenfi.fillLabels();
+
+  handleFormSubmit('#simulation-form', async (data) => {
+    const approval = window.zenfi.getCreditApproval(data);
+    data.credit_status = approval.status;
+    data.credit_rejection_reason = approval.reason;
+    await window.zenfi.sendData(data);
+
+    if (approval.status === 'SUCCEEDED') {
+      window.location.href = buildYaveLink(data);
+    } else {
+      window.location.href = '/yave/reject';
+    }
+  });
 </script>

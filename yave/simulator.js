@@ -101,7 +101,8 @@ function buildYaveLink(data) {
     state: get('state_id'),
     salary: get('monthly_income'),
   };
-  return `https://yave.mx/zenfi?p=${btoa(JSON.stringify(yaveData))}`;
+  const baseLink = 'https://yave.mx/zenfi?utm_source=Zenfi&utm_medium=Preaprobador&utm_campaign=01-07-2021-Link_Refinanciamiento-PA';
+  return `${baseLink}&p=${btoa(JSON.stringify(yaveData))}`;
 }
 
 function zenfiController() {
@@ -333,7 +334,7 @@ function zenfiController() {
       interestRate: currentInterestRate,
       remainingYears: yaveTerms,
     });
-    const totalSavings = Math.max(simulatedSavings, simpleSavings);
+    const totalSavings = Math.max(simulatedSavings, simpleSavings, 0);
     const monthlySavings = totalSavings / (12 * currentTerms);
     const yaveMonthlyPayment = currentPayment - monthlySavings;
     mergeInCookie({

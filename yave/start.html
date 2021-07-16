@@ -7,10 +7,10 @@
 
   handleFormSubmit('#credit-info-form', async (data) => {
     const simulation = await window.zenfi.simulateCredit(data);
-    if (simulation.totalSavings > 0) {
+    if (simulation.totalSavings >= 0) {
       window.location.href = '/yave/result';
     } else {
-      window.location.href = '/yave/info';
+      window.location.href = '/yave/reject';
     }
   });
 </script>
