@@ -102,7 +102,7 @@ function buildYaveLink(data) {
     salary: get('monthly_income'),
   };
   const baseLink = 'https://yave.mx/zenfi?utm_source=Zenfi&utm_medium=Preaprobador&utm_campaign=01-07-2021-Link_Refinanciamiento-PA';
-  return `${baseLink}&p=${btoa(JSON.stringify(yaveData), null, 2)}`;
+  return `${baseLink}&p=${btoa(JSON.stringify(yaveData, null, 2))}`;
 }
 
 function zenfiController() {
