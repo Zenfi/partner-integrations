@@ -73,6 +73,12 @@ function calculateRemainingPayments({ amount, monthlyPayment, interestRate, coun
   });
 };
 
+function encodeUnicode(str) {
+  return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_match, p1) => {
+    return String.fromCharCode('0x' + p1);
+  })).replace('=', '');
+}
+
 function buildYaveLink(data) {
   const get = (key) => (data || {})[key] || null;
   const yaveData = {
@@ -102,7 +108,7 @@ function buildYaveLink(data) {
     salary: get('monthly_income'),
   };
   const baseLink = 'https://yave.mx/zenfi?utm_source=Zenfi&utm_medium=Preaprobador&utm_campaign=01-07-2021-Link_Refinanciamiento-PA';
-  return `${baseLink}&p=${btoa(JSON.stringify(yaveData, null, 2))}`;
+  return `${baseLink}&p=${encodeUnicode(JSON.stringify(yaveData))}`;
 }
 
 function zenfiController() {
