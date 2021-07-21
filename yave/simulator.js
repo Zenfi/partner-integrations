@@ -76,7 +76,7 @@ function calculateRemainingPayments({ amount, monthlyPayment, interestRate, coun
 function encodeUnicode(str) {
   return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, (_match, p1) => {
     return String.fromCharCode('0x' + p1);
-  })).replace('=', '');
+  })).replace(/=/g, '');
 }
 
 function buildYaveLink(data) {
