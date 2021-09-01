@@ -79,6 +79,12 @@ function encodeUnicode(str) {
   })).replace(/=/g, '');
 }
 
+function parsePhone(input) {
+  if (!(input || '').includes('-')) return null;
+  const [_int, number] = input.split('-');
+  return number;
+}
+
 function buildYaveLink(data) {
   const get = (key) => (data || {})[key] || null;
   const yaveData = {
@@ -106,6 +112,7 @@ function buildYaveLink(data) {
     email: get('email'),
     state: get('state_id'),
     salary: get('monthly_income'),
+    phone: parsePhone(get('phone')),
   };
   const baseLink = 'https://yave.mx/zenfi?utm_source=Zenfi&utm_medium=Preaprobador&utm_campaign=01-07-2021-Link_Refinanciamiento-PA';
   return `${baseLink}&p=${encodeUnicode(JSON.stringify(yaveData))}`;
